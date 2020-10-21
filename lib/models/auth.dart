@@ -4,32 +4,25 @@ import 'package:hive/hive.dart';
 class AuthState with ChangeNotifier {
   final Box _authBox = Hive.box('authBox');
 
-  bool _isAuthenticated;
-  String _login;
-  String _password;
+  bool _isAuthenticated = false;
 
-  AuthState() {
-    _isAuthenticated = _authBox.get('authenticated', defaultValue: false) as bool;
-  }
 
   Future<void> signup({@required String login, @required String password}) async {
-    _login = login;
-    _password = password;
     await _authBox.put('login', login);
     await _authBox.put('password', password);
-    await _authBox.put('authenticated', true);
     _isAuthenticated = true;
     notifyListeners();
   }
 
-  void signin({@required String login, @required String password}) {
-    _login = login;
-    _password = password;
-    _authBox.put('login', login);
-    _authBox.put('password', password);
-    _authBox.put('authenticated', true);
-    _isAuthenticated = true;
-    notifyListeners();
+  Future<bool> signin({@required String login, @required String password}) async {
+    final _l = _authBox.get('login') as String;
+    final _p = _authBox.get('password') as String;
+    if (_l == login && _p == password) {
+      _isAuthenticated = true;
+      notifyListeners();
+      return true;
+    }
+    return false;
   }
 
   void logout() {

@@ -4,8 +4,12 @@ import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final bool isLoginScreen;
+  // final TextEditingController _loginController = TextEditingController(text: 'login');
+  // final TextEditingController _passwordController = TextEditingController(text: '11');
+
   final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -15,6 +19,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: Center(
           child: Container(
             padding: EdgeInsets.all(40.0),
@@ -54,17 +59,22 @@ class LoginScreen extends StatelessWidget {
                           padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.symmetric(horizontal: 64)),
                           backgroundColor: MaterialStateProperty.all<Color>(Colors.orange)),
                       child: Text(isLoginScreen ? 'Войти' : 'Регистрация'),
-                      onPressed: () {
+                      onPressed: () async {
                         final _auth = Provider.of<AuthState>(context, listen: false);
                         final _isValid = _formKey.currentState.validate();
                         if (isLoginScreen && _isValid) {
-                          _auth.signin(login: _loginController.text, password: _passwordController.text);
+                          final _result = await _auth.signin(login: _loginController.text, password: _passwordController.text);
+                          if (_result) {
+                            await Navigator.pushReplacementNamed(context, '/notes');
+                            return;
+                          }
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Ошибка. Пароль не верный')));
                         }
                         if (!isLoginScreen && _isValid) {
-                          _auth.signin(login: _loginController.text, password: _passwordController.text);
+                          await _auth.signup(login: _loginController.text, password: _passwordController.text);
+                          await Navigator.pushReplacementNamed(context, '/notes');
                         }
                       }
-                      // Navigator.pushReplacementNamed(context, '/catalog');
 
                       ),
                   FlatButton(

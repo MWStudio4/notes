@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 final appTheme = ThemeData(
-  primarySwatch: Colors.yellow,
+  primarySwatch: Colors.orange,
   textTheme: TextTheme(
     headline1: TextStyle(
       fontFamily: 'Corben',
@@ -13,5 +13,12 @@ final appTheme = ThemeData(
       fontSize: 24,
       color: Colors.black,
     ),
+  ),
+  appBarTheme: AppBarTheme(
+    brightness: Brightness.light,
+    color: Colors.orange,
+    elevation: 0,
+
+
   ),
 );
