@@ -1,4 +1,4 @@
-package dev.flutter.provider_shopper
+package com.mwstudio4.notes
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
